@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "make": "Man",
+        "model": "26.440 efficient line",
+        "year": "2017",
+        "price": 575000,
+        "mileage": 505000,
+        "image": "/images/trucks/truck_1.jpg"
+    },
+    {
+        "id": 2,
+        "make": "Man",
+        "model": "TGS 26.480",
+        "year": "2021",
+        "price": 1195000,
+        "mileage": 1000000,
+        "image": "/images/trucks/truck_2.jpg"
+    },
+    {
+        "id": 3,
+        "make": "Man",
+        "model": "26.440 efficient line",
+        "year": "2017",
+        "price": 575000,
+        "mileage": 233000,
+        "image": "/images/trucks/truck_1.jpg"
+    },
+    {
+        "id": 4,
+        "make": "Man",
+        "model": "26.440 efficient line",
+        "year": "2017",
+        "price": 575000,
+        "mileage": 233000,
+        "image": "/images/trucks/truck_2.jpg"
+    },
+    {
+        "id": 5,
+        "make": "Man",
+        "model": "26.440 efficient line",
+        "year": "2017",
+        "price": 575000,
+        "mileage": 233000,
+        "image": "/images/trucks/truck_1.jpg"
+    }
+]
