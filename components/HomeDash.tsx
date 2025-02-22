@@ -26,7 +26,7 @@ const HomeDash = () => {
               cx="80"
               cy="80"
               fill="transparent"
-              stroke="#60e6a8"
+              stroke="#61CAE9"
               strokeLinecap="round"
               strokeWidth="12"
               strokeDasharray="439.6"
