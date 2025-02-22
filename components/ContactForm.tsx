@@ -94,7 +94,7 @@ Message: ${data.message}
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto mb-5">
       {submitStatus.type && (
           <Alert className={submitStatus.type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}>
             <AlertDescription>

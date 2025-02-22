@@ -1,4 +1,5 @@
 import ContactForm from '@/components/ContactForm'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -10,6 +11,19 @@ export const metadata: Metadata = {
 const Contact = () => {
   return (
     <>
+      <div className='pb-3'>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Contact us</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <ContactForm />
     </>
   )

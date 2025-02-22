@@ -9,12 +9,11 @@ import { Button } from './ui/button';
 import { LogIn } from 'lucide-react';
 
 const navigation = [
-  { name: 'Home', href: '/', current: true },
   { name: 'Fleet', href: '/fleet', current: false },
   { name: 'How we work', href: '/how-we-work', current: false },
   { name: 'About us', href: '/about', current: false },
   { name: 'Projects', href: '/projects', current: false },
-  { name: 'Contact', href: '/contact', current: false },
+  { name: 'Contact us', href: '/contact', current: false },
 ]
 
 function classNames(...classes: (string | false | null | undefined)[]): string {

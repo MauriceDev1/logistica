@@ -57,7 +57,7 @@ export default function Home() {
         <div className="w-1/2 h-96 bg-truck-2 bg-cover" />
       </div>
 
-      <div className="w-full h-80 bg-gray-300 mt-5">
+      <div className="w-full h-80 bg-gray-300 mt-5 mb-10">
 
       </div>
     </>
