@@ -14,8 +14,8 @@ export default function Home() {
       <Hero />
       <HomeDash />
 
-      <div className="w-full flex gap-5 py-5">
-        <div className="w-1/2 p-5">
+      <div className="w-full flex flex-wrap md:flex-nowrap gap-5 py-5">
+        <div className="w-full md:w-1/2 p-5">
           <h1 className="text-3xl">
             Logistic Syndication
           </h1>
@@ -24,7 +24,7 @@ export default function Home() {
           </p>
           <Button className="mt-3 bg-customBlue hover:bg-customBlueHover">More Info</Button>
         </div>
-        <div className="w-1/2 h-96 bg-ship_doc bg-cover">
+        <div className="w-full md:w-1/2 h-96 bg-ship_doc bg-cover">
 
         </div>
       </div>

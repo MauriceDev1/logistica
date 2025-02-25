@@ -104,9 +104,11 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator /> */}
-            <DropdownMenuItem className="cursor-pointer" onClick={async () => {
+            <DropdownMenuItem className="cursor-pointer" onClick={
+              async () => {
                 await fetch("/auth/signout", { method: "POST" }); // Adjust method if needed
                 router.push("/login"); // Redirect after logout
+                router.refresh();
               }}>
               <LogOut />
               Log out

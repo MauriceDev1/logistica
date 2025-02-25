@@ -5,8 +5,8 @@ import Link from 'next/link';
 import LogoTruck1 from "@/public/images/logo_abstract.png"
 // import LogoTruck2 from "@/public/images/logo_truck_2.png"
 import Image from 'next/image';
-import { Button } from './ui/button';
-import { LogIn } from 'lucide-react';
+import AuthNav from './AuthNav';
+import { createClient } from '@/lib/supabase/server';
 
 const navigation = [
   { name: 'Fleet', href: '/fleet', current: false },
@@ -21,7 +21,14 @@ function classNames(...classes: (string | false | null | undefined)[]): string {
 }
 
 
-export default function Navbar() {
+export default async function Navbar() {
+  const supabase = await createClient()
+
+  // Check if a user's logged in
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <Disclosure as="nav" className="bg-white z-50 sticky top-0 w-full">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -66,11 +73,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <Link href="/login">
-                <Button className='flex gap-2'>
-                  Login <LogIn />
-                </Button>
-              </Link>
+              <AuthNav role={user?.role}/>
           </div>
         </div>
       </div>
