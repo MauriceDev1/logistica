@@ -88,7 +88,7 @@ const VehicleFilter = () => {
 
     return (
       <div className="w-full flex lg:flex-nowrap gap-5">
-        <Card className="w-[450px] border-none shadow-none">
+        <Card className="hidden lg:block w-[450px] border-none shadow-none">
           <div className="w-full border sticky top-20 border-gray-300 rounded-sm p-3 space-y-6">
             <div className="space-y-2">
               <Label htmlFor="brand">Brand</Label>

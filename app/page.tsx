@@ -29,11 +29,11 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-full flex gap-5 py-5">
-        <div className="w-1/2 h-96 bg-gray-200">
+      <div className="w-full flex flex-wrap md:flex-nowrap gap-5 py-5">
+        <div className="w-full md:w-1/2 h-96 bg-gray-200">
 
         </div>
-        <div className="w-1/2 p-5">
+        <div className="w-full md:w-1/2 p-5">
           <h1 className="text-3xl">
             What is a Syndication
           </h1>
@@ -44,8 +44,8 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-full flex gap-5 py-5">
-        <div className="w-1/2 p-5">
+      <div className="flex flex-wrap md:flex-nowrap gap-5 py-5">
+        <div className="w-full md:w-1/2 p-5">
           <h1 className="text-3xl">
             Why Mogistic
           </h1>
@@ -54,7 +54,7 @@ export default function Home() {
           </p>
           <Button className="mt-3 bg-customBlue hover:bg-customBlueHover">More Info</Button>
         </div>
-        <div className="w-1/2 h-96 bg-truck-2 bg-cover" />
+        <div className="w-full md:w-1/2 h-96 bg-truck-2 bg-cover" />
       </div>
 
       <div className="w-full h-80 bg-gray-300 mt-5 mb-10">
