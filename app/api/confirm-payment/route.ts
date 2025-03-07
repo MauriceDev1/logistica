@@ -1,8 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest, NextResponse } from 'next/server'
 
-// Define POST method directly
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const { orderID, paymentDetails } = req.body;
+export async function POST(req: NextRequest) {
+  const { orderID, paymentDetails } = await req.json();
 
   try {
     // Validate payment (recommend server-side verification with PayPal)
@@ -12,17 +11,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       // Update order status
       // Send confirmation email, etc.
 
-      res.status(200).json({
+      return NextResponse.json({
         message: 'Payment confirmed',
         orderID
       });
     } else {
-      res.status(400).json({ message: 'Payment not completed' });
+      return NextResponse.json({ message: 'Payment not completed' }, { status: 400 });
     }
   } catch (error) {
-    res.status(500).json({
+    return NextResponse.json({
       message: 'Payment verification failed',
       error: error
-    });
+    }, { status: 500 });
   }
 }
