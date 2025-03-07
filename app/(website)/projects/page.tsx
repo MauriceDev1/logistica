@@ -23,6 +23,14 @@ const Projects = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      <div className='w-full'>
+        <div className='w-full h-72 bg-gray-300 mb-5'>
+
+        </div>
+        <div className='w-full h-72 bg-gray-300 mb-5'>
+
+        </div>
+      </div>
     </>
   )
 }
