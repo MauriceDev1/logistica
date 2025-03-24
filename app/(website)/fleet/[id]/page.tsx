@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Fleet from "@/data/mock/Fleet.json"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
@@ -9,12 +9,29 @@ import { Card } from '@/components/ui/card'
 import { ChartSpline, Minus, Plus } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import BraintreeHostedFields from '@/components/BraintreeHostedFields'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useToast } from "@/hooks/use-toast"
+import { useAuth } from '@/app/context/AuthContext'
 
 const Details = () => {
   const [count, setCount] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
   const params = useParams();
+  const { toast } = useToast();
   const TruckData = Fleet.find(i => i.id === Number(params.id));
+  const { user } = useAuth();
+
+  const fetchUserData = async () => {
+    // Simulate an API call
+    return new Promise((resolve) => setTimeout(resolve, 2000));
+  };
+
+  useEffect(() => {
+    setIsLoadingUser(true);
+    fetchUserData().then(() => setIsLoadingUser(false));
+  }, []);
 
   const increment = () => {
     setCount(prv => prv + 1);
@@ -23,24 +40,118 @@ const Details = () => {
   const decrement = () => {
     if(count === 1) return;
     setCount(prv => prv - 1);
-  }
+  };
 
-  const handlePaymentSuccess = async (nonce: string) => {
-    try {
-      const response = await fetch("/api/braintree/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nonce, amount: "10.00" }), // Replace with actual amount
+  // Improved reference generator with more entropy to avoid duplicates
+  const generateReference = () => {
+    const timestamp = Date.now();
+    const randomPart = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    const userPart = user && user.email ? user.email.substring(0, 3) : 'usr';
+
+    return `tx_${timestamp}_${randomPart}_${userPart}`;
+};
+
+  const handlePayment = async () => {
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to proceed with payment",
+        variant: "destructive"
       });
+      return;
+    }
 
-      const data = await response.json();
-      if (data.success) {
-        alert("Payment successful! Transaction ID: " + data.transaction.id);
-      } else {
-        alert("Payment failed: " + data.error);
+    if (!acceptTerms) {
+      toast({
+        title: "Terms Required",
+        description: "Please accept the terms and conditions before proceeding",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // Generate a unique reference for this transaction
+      const reference = generateReference();
+      const amount = count * 1000 * 100; // Convert to kobo (smallest currency unit)
+
+      // Skip the API call to your backend and directly use Paystack inline
+      try {
+        // Dynamically import Paystack
+        const PaystackPop = await import('@paystack/inline-js').then(module => module.default || module);
+
+        const paystack = new PaystackPop();
+        paystack.newTransaction({
+          key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
+          email: user.email!,
+          amount: amount,
+          reference: reference,
+          currency: 'ZAR', // Add currency explicitly
+          onSuccess: (transaction) => {
+            // Handle successful payment
+            toast({
+              title: "Payment Successful",
+              description: `Transaction Reference: ${transaction.reference}`,
+              variant: "default"
+            });
+
+            // Optionally record the successful transaction in your backend
+            recordSuccessfulPayment(transaction.reference);
+          },
+          onCancel: () => {
+            toast({
+              title: "Payment Cancelled",
+              description: "You cancelled the payment",
+              variant: "destructive"
+            });
+          }
+        });
+      } catch (error) {
+        console.error("Paystack initialization error:", error);
+        toast({
+          title: "Payment Error",
+          description: "Could not initialize payment gateway",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error("Payment error:", error);
+      toast({
+        title: "Payment Error",
+        description: "An error occurred while processing your payment",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to record successful payment
+  const recordSuccessfulPayment = async (reference: string) => {
+    try {
+      // Call your backend API to record the successful transaction
+      const response = await fetch('/api/paystack/record-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reference,
+          amount: count * 1000,
+          email: user?.email,
+          productId: params.id
+        }),
+      });
+
+      const data = await response.json();
+      if (!data.success) {
+        console.error("Failed to record payment:", data.message);
+      }
+    } catch (error) {
+      console.error("Error recording payment:", error);
     }
   };
 
@@ -106,7 +217,36 @@ const Details = () => {
               <h2>Total:</h2>
               <h2 className='text-green-600 font-semibold'>R {count * 1000}.00</h2>
             </div>
-            <BraintreeHostedFields onPaymentSuccess={handlePaymentSuccess} />
+            <div className='w-full flex mt-5 text-gray-700 items-center gap-2'>
+            <Checkbox
+                id="terms"
+                checked={acceptTerms}
+                onCheckedChange={(checked) => setAcceptTerms(checked === true)}
+              />
+              <label htmlFor="terms">
+                I accept the terms and conditions
+              </label>
+            </div>
+            {isLoadingUser ? (
+              <Button className='w-full bg-gray-500 mt-5 h-10' disabled>
+                Loading...
+              </Button>
+            ) : user ? (
+              <Button
+                className='w-full bg-black mt-5 h-10'
+                onClick={handlePayment}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processing...' : `Process Payment R${count * 1000}.00`}
+              </Button>
+            ) : (
+              <Button
+                className='w-full bg-blue-600 mt-5 h-10'
+                onClick={() => window.location.href = '/login'}
+              >
+                Login to Purchase
+              </Button>
+            )}
           </Card>
         </div>
       </div>

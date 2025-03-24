@@ -8,23 +8,23 @@ import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 
 interface AuthNavProps {
-  role?: string;
+  email?: string | null;
 }
 
-const AuthNav: React.FC<AuthNavProps> = ({ role }) => {
+const AuthNav: React.FC<AuthNavProps> = ({ email }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     // Check if user is authenticated either from props or cookies
-    if (role === 'authenticated') {
+    if (email !== null ) {
       setIsLoggedIn(true)
     } else {
       // Check cookie as fallback
       const authCookie = Cookies.get('isAuthenticated')
       setIsLoggedIn(authCookie === 'true')
     }
-  }, [role])
+  }, [email])
 
   const handleLogout = async () => {
     // Use js-cookie for better cross-browser compatibility
