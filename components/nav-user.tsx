@@ -30,18 +30,36 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
+import { logOut } from "@/app/lib/firebase/auth"
+import Cookies from 'js-cookie';
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export function NavUser({ email }: {email: string}) {
   const router = useRouter();
   const { isMobile } = useSidebar()
+
+  const handleLogout = async () => {
+    try {
+      // Call the logout function from your auth utilities
+      const { error } = await logOut();
+
+      if (error) {
+        // Handle any logout errors
+        console.error('Logout failed:', error);
+        alert('Failed to log out. Please try again.');
+        return;
+      }
+
+      // Remove authentication cookie
+      Cookies.remove('isAuthenticated');
+
+      // Refresh the page to update server components and clear any user-specific state
+      router.push('/'); // Optionally redirect to home page
+      router.refresh();
+    } catch (error) {
+      console.error('Unexpected error during logout:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -53,12 +71,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src="Avatar Image" alt="Maurice" />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">Maurice</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -72,44 +90,16 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src="Avatar Image" alt="Maurice" />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">Maurice</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            {/*<DropdownMenuSeparator />
-             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
-            <DropdownMenuItem className="cursor-pointer" onClick={
-              async () => {
-                await fetch("/auth/signout", { method: "POST" }); // Adjust method if needed
-                router.push("/login"); // Redirect after logout
-                router.refresh();
-              }}>
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
