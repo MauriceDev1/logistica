@@ -62,9 +62,9 @@ export function LoginForm({
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Create a new account</h1>
+        <h1 className="text-2xl font-bold">Signin</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to create your account
+          Enter your email below to signin to your account
         </p>
       </div>
       <div className="grid gap-6">
@@ -104,17 +104,17 @@ export function LoginForm({
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating account...
+              Signing in to your account...
             </>
           ) : (
-            "Register"
+            "Sigin"
           )}
         </Button>
       </div>
       <div className="text-center text-sm">
-        Have an account?{" "}
-        <Link href="/login" className="underline underline-offset-4">
-          Sign in
+        Dont have an account?{" "}
+        <Link href="/register" className="underline underline-offset-4">
+          Signup
         </Link>
       </div>
     </form>

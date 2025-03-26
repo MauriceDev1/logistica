@@ -1,39 +1,44 @@
 "use client"
 
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { LogIn, LogOut, User } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import Cookies from 'js-cookie'
+import { logOut } from '@/app/lib/firebase/auth'; // Adjust the import path
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface AuthNavProps {
   email?: string | null;
 }
 
 const AuthNav: React.FC<AuthNavProps> = ({ email }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    // Check if user is authenticated either from props or cookies
-    if (email !== null ) {
-      setIsLoggedIn(true)
-    } else {
-      // Check cookie as fallback
-      const authCookie = Cookies.get('isAuthenticated')
-      setIsLoggedIn(authCookie === 'true')
-    }
-  }, [email])
-
   const handleLogout = async () => {
-    // Use js-cookie for better cross-browser compatibility
-    await fetch("/auth/signout", { method: "POST" });
-    setIsLoggedIn(false)
-    router.refresh() // Refresh the page to update server components
-  }
+    try {
+      // Call the logout function from your auth utilities
+      const { error } = await logOut();
 
-  if (isLoggedIn) {
+      if (error) {
+        // Handle any logout errors
+        console.error('Logout failed:', error);
+        alert('Failed to log out. Please try again.');
+        return;
+      }
+
+      // Remove authentication cookie
+      Cookies.remove('isAuthenticated');
+
+      // Refresh the page to update server components and clear any user-specific state
+      router.push('/'); // Optionally redirect to home page
+      router.refresh();
+    } catch (error) {
+      console.error('Unexpected error during logout:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
+  };
+
+  if (email) {
     return (
       <div className="flex gap-2">
         <Link href="/profile">

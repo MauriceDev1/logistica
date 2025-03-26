@@ -3,12 +3,10 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link';
-// import AuthComponent from './AuthComponent';
 import LogoTruck1 from "@/public/images/logo_abstract.png"
-// import LogoTruck2 from "@/public/images/logo_truck_2.png"
 import Image from 'next/image';
-// import AuthNav from './AuthNav';
-// import { useAuth } from "@/app/context/AuthContext"
+import AuthNav from './AuthNav';
+import { useAuth } from "@/app/context/AuthContext"
 
 const navigation = [
   { name: 'Fleet', href: '/fleet', current: false },
@@ -24,9 +22,7 @@ function classNames(...classes: (string | false | null | undefined)[]): string {
 
 
 export default function Navbar() {
-  // const { user } = useAuth();
-
-  // alert(user?.email)
+  const { user } = useAuth();
 
   return (
     <Disclosure as="nav" className="bg-white z-50 sticky top-0 w-full">
@@ -72,8 +68,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              {/* <AuthNav email={user?.email}/> */}
-              d
+              <AuthNav email={user?.email}/>
           </div>
         </div>
       </div>
