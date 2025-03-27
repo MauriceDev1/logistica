@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation';
+import { addDocument } from "@/app/lib/firebase/firestore";
 
 const countryCodes = ["+1", "+27", "+44", "+91", "+61"];
 
@@ -99,7 +99,6 @@ const RegistrationForm = () => {
   }, [idNumber, setValue]);
 
   const onSubmit = async (data: FormData) => {
-    const supabase = await createClient();
     try {
       setLoading(true)
 
@@ -117,27 +116,21 @@ const RegistrationForm = () => {
         cell_phone_country_code: data.cell_country_code,
         cell_phone: data.cell_phone,
         address: data.address,
-        updated_at: new Date().toISOString(),
       }
 
-      // Insert the data into the users table
-      const { error } = await supabase
-        .from('users')
-        .upsert(userData, {
-          onConflict: 'id',
-          ignoreDuplicates: false,
-        })
+      // Add the user document to Firestore
+      const { id, error } = await addDocument('users', userData);
 
-      if (error) throw error
+      if (error) throw error;
 
       // Success notification
-      alert('Profile updated successfully!')
-      // You might want to redirect here
+      alert(`Profile created successfully! ${id}`)
+      // Redirect to login page
       router.push('/login')
 
     } catch (error) {
-      console.error('Error updating profile:', error)
-      alert('Error updating profile. Please try again.')
+      console.error('Error creating profile:', error)
+      alert('Error creating profile. Please try again.')
     } finally {
       setLoading(false)
     }

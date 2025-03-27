@@ -41,7 +41,7 @@ export function RegisterForm({
         //   title: "Account created successfully",
         //   description: "Welcome to our platform!",
         // });
-        router.push("/dashboard"); // Redirect to dashboard or wherever you want
+        router.push(`/create-profile/${user.uid}`); // Redirect to dashboard or wherever you want
       }
     } catch (err) {
       console.error("Registration error:", err);

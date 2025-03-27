@@ -241,7 +241,7 @@ const Details = () => {
               </Button>
             ) : (
               <Button
-                className='w-full bg-blue-600 mt-5 h-10'
+                className='w-full bg-black mt-5 h-10'
                 onClick={() => window.location.href = '/login'}
               >
                 Login to Purchase
