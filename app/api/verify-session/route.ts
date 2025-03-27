@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import admin from 'firebase-admin';
 
 // Initialize Firebase Admin only once
@@ -12,18 +12,13 @@ if (!admin.apps.length) {
   });
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { session } = req.body;
+export async function POST(req: NextRequest) {
+  // Parse the request body
+  const body = await req.json();
+  const { session } = body;
 
   if (!session) {
-    return res.status(401).json({ error: 'No session provided' });
+    return NextResponse.json({ error: 'No session provided' }, { status: 401 });
   }
 
   try {
@@ -31,16 +26,10 @@ export default async function handler(
     await admin.auth().verifySessionCookie(session, true);
 
     // Session is valid
-    return res.status(200).json({ valid: true });
+    return NextResponse.json({ valid: true }, { status: 200 });
   } catch (error) {
     // Invalid session
     console.error('Session verification failed:', error);
-    return res.status(401).json({ error: 'Invalid session' });
+    return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
